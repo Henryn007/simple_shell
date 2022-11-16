@@ -1,89 +1,50 @@
-#ifndef SHELL
-
-#define SHELL
-
-
+#ifndef SHELL_H
+#define SHELL_H
 
 #include <stdio.h>
-
 #include <stdlib.h>
-
 #include <unistd.h>
-
-#include <string.h>
-
-#include <dirent.h>
-
-#include <stddef.h>
-
-#include <errno.h>
-
 #include <sys/types.h>
-
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <sys/wait.h>
-
-
-
-#define TOKENS_BUFFER_SIZE 64
-
-#define LINE_SIZE 1024
-
-#define TOKEN_DELIMITERS " \t\r\n\a"
+#include <fcntl.h>
+#include <string.h>
+#include <signal.h>
 
 extern char **environ;
 
-/**
- * struct builtins - Has builtins and associated funcs
- * @arg: Builtins name
- * @builtin: Mathcing builtin func
- */
+/* PATH Shell Functions */
 
-typedef struct builtins
+/* Program Flow */
 
-{
-  
-  char *arg;
-  
-  void (*builtin)(char **args, char *line, char **env);
-  
-} builtins_t;
+int prompt(void);
+char *_read(void);
+char *_fullpathbuffer(char **av, char *PATH, char *copy);
+int checkbuiltins(char **av, char *buffer, int exitstatus);
+int _forkprocess(char **av, char *buffer, char *fullpathbuffer);
 
-void shell(int ac, char **av, char **env);
+/* String Helper Functions */
 
-char *_getline(void);
-
-char **split_line(char *line);
-
-int execute_prog(char **args, char *line, char **env, int flow);
-
-int check_for_builtins(char **args, char *line, char **env);
-
-int launch_prog(char **args);
-
-void exit_shell(char **args, char *line, char **env);
-
-void env_shell(char **args, char *line, char **env);
-
-int _strcmp(char *s1, char *s2);
-
-char *find_path(char *args, char *tmp, char *er);
-
-char *search_cwd(char *filename, char *er);
-
-int bridge(char *check, char **args);
-
-void prompt(void);
-
-int builtins_checker(char **args);
-
-char *save_path(char *tmp, char *path);
-
-char *read_dir(char *er, struct dirent *s, char *fi, int l, char *p, char *t);
-
-char *_getenv(char *env);
-
-char *_strstr(char *haystack, char *needle);
-
+char *_strdup(char *str);
+int _splitstring(char *str);
+int _strcmp(const char *s1, const char *s2);
+char *_strcat(char *dest, char *src);
 int _strlen(char *s);
+
+/*Tokenize & PATH Helper Functions*/
+
+char **tokenize(char *buffer);
+int _splitPATH(char *str);
+int _PATHstrcmp(const char *s1, const char *s2);
+char *_concat(char *tmp, char **av, char *tok);
+
+/*Other Helper Funcs*/
+
+char *_getenv(const char *name);
+int _env(void);
+void _puts(char *str);
+int _putchar(char c);
+char *_memset(char *s, char b, unsigned int n);
 
 #endif
